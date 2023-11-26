@@ -1,0 +1,15 @@
+greeting:
+  message: "hello"
+
+quarkus:
+  datasource:
+    db-kind: postgresql
+    username: hexagonalinfrastructure
+    password: hexagonalinfrastructure
+    reactive:
+      url: postgresql://192.168.100.240:5432/hexagonalinfrastructure
+#    jdbc:
+#      url: vertx-reactive:postgresql://192.168.100.240:5432/hexagonalinfrastructure
+  hibernate-orm:
+    database:
+      generation: drop-and-create
