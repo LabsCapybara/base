@@ -1,7 +1,7 @@
-package dev.capybaralabs.domain.services.impl;
+package dev.capybaralabs.domain.adapters.services;
 
-import dev.capybaralabs.domain.User;
-import dev.capybaralabs.domain.services.UserService;
+import dev.capybaralabs.domain.dtos.UserDTO;
+import dev.capybaralabs.domain.ports.interfaces.UserServicePort;
 import dev.capybaralabs.infrastructure.postgresql.adapters.entity.UserEntity;
 import dev.capybaralabs.infrastructure.postgresql.adapters.repositories.UserRepository;
 import io.smallrye.mutiny.Uni;
@@ -11,13 +11,13 @@ import jakarta.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
-public class UserServiceImpl implements UserService {
+public class UserService implements UserServicePort {
 
     @Inject
     UserRepository userRepository;
 
     @Override
-    public Uni<List<UserEntity>> findAll() {
-        return userRepository.findAll().list();
+    public Uni<List<UserDTO>> findAll() {
+        return userRepository.listAll().map(UserEntity::toDTO);
     }
 }

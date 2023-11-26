@@ -1,21 +1,18 @@
-package dev.capybaralabs.application.adapters.controllers;
+package dev.capybaralabs.application.adapters.rest;
 
-import dev.capybaralabs.domain.services.UserService;
-import dev.capybaralabs.infrastructure.postgresql.adapters.entity.UserEntity;
+import dev.capybaralabs.domain.adapters.services.UserService;
+import dev.capybaralabs.domain.dtos.UserDTO;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 
 @WithTransaction
-@ApplicationScoped
 @Path("/user")
 public class UserResource {
 
@@ -24,7 +21,7 @@ public class UserResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<List<UserEntity>> hello() {
+    public Uni<List<UserDTO>> allUser() {
         return userService.findAll();
     }
 }
