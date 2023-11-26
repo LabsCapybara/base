@@ -3,7 +3,6 @@ package dev.capybaralabs.infrastructure.postgresql.adapters.repositories;
 import dev.capybaralabs.domain.User;
 import dev.capybaralabs.domain.dtos.UserDTO;
 import dev.capybaralabs.domain.repositories.UserRepositoryPort;
-import dev.capybaralabs.infrastructure.postgresql.adapters.entity.UserEntity;
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Uni;
@@ -21,6 +20,7 @@ public class UserRepository implements UserRepositoryPort, PostgresRepositoryPor
     public UserRepository(PostgresRepositoryPort postgresRepositoryPort) {
         UserRepository.postgresRepositoryPort = postgresRepositoryPort;
     }
+
 
     @Override
     public Uni<List<User>> all() {
