@@ -21,7 +21,7 @@ public class UserResource {
     @Query
     @Description("All User")
     public Uni<List<UserDTO>> allUser() {
-        return userService.findAll();
+        return userService.listAllUsers();
     }
 
 }

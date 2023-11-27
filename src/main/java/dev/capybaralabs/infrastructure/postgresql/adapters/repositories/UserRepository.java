@@ -3,49 +3,49 @@ package dev.capybaralabs.infrastructure.postgresql.adapters.repositories;
 import dev.capybaralabs.domain.User;
 import dev.capybaralabs.domain.dtos.UserDTO;
 import dev.capybaralabs.domain.repositories.UserRepositoryPort;
+import dev.capybaralabs.infrastructure.postgresql.adapters.entity.UserEntity;
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
-import io.quarkus.panache.common.Sort;
+import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
-
-import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 
 @ApplicationScoped
-public class UserRepository implements UserRepositoryPort, PostgresRepositoryPort {
-
-    private static PostgresRepositoryPort postgresRepositoryPort;
-
-    public UserRepository(PostgresRepositoryPort postgresRepositoryPort) {
-        UserRepository.postgresRepositoryPort = postgresRepositoryPort;
-    }
-
+public class UserRepository implements UserRepositoryPort, PanacheRepository<UserEntity> {
 
     @Override
-    public Uni<List<User>> all() {
-        Uni<List<User>> releaseDate = postgresRepositoryPort
-                .listAll(Sort.by("id"))
-                .ifNoItem()
-                .after(Duration.ofMillis(10000))
-                .fail()
-                .onFailure()
-                .recoverWithUni(Uni.createFrom().<List<PanacheEntityBase>>item(Collections.EMPTY_LIST));
-        return releaseDate;
+    public Uni<List<User>> listAllUser() {
+        return findAll().list().map(UserEntity::toDomain);
     }
 
     @Override
     public Uni<User> findByName(String name) {
-        return null;
+        return find("name", name).firstResult()
+                .onItem().ifNotNull().transform(UserEntity::toDomain)
+                .onItemOrFailure().transformToUni((entity, throwable) -> {
+                    if (entity != null) {
+                        return Uni.createFrom().item(entity.toDomain());
+                    } else {
+                        return Uni.createFrom().item(new User());
+                    }
+                });
     }
 
     @Override
     public Uni<User> findByEmail(String email) {
-        return null;
+        return find("email", email).firstResult().map(UserEntity::toDomain);
     }
 
     @Override
     public Uni<User> save(UserDTO userDTO) {
-        return null;
+        return persist(userDTO.toEntity()).map(UserEntity::toDomain);
     }
+
+    @Override
+    public Uni<Void> delete(UserDTO userDTO) {
+        return findById(userDTO.getId())
+                .onItem().call(PanacheEntityBase::delete)
+                .replaceWithVoid();
+    }
+
 }

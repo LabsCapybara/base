@@ -1,14 +1,11 @@
 package dev.capybaralabs.domain.dtos;
 
-import dev.capybaralabs.domain.User;
 import dev.capybaralabs.infrastructure.postgresql.adapters.entity.UserEntity;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -22,17 +19,17 @@ public class UserDTO {
     public String email;
     public String password;
 
-    public UserDTO fromEntity(User user) {
-        return new UserDTO(
-            user.getId(),
-            user.getName(),
-            user.getEmail(),
-            user.getPassword()
+    public UserEntity toEntity() {
+        return new UserEntity(
+            this.id,
+            this.name,
+            this.email,
+            this.password
         );
     }
 
-    public User toEntity() {
-        return new User(
+    public UserDTO toDTO() {
+        return new UserDTO(
             this.id,
             this.name,
             this.email,

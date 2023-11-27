@@ -1,6 +1,6 @@
 package dev.capybaralabs.infrastructure.postgresql.adapters.entity;
 
-import dev.capybaralabs.domain.dtos.UserDTO;
+import dev.capybaralabs.domain.User;
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Entity;
@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,10 +29,11 @@ public class UserEntity extends PanacheEntity {
         this.password = password;
     }
 
-    public UserDTO toDTO() {
-        return new UserDTO(this.id, this.name, this.email, this.password);
+    public static List<User> toDomain(List<UserEntity> userEntities) {
+        return userEntities.stream().map(UserEntity::toDomain).collect(Collectors.toList());
     }
-    public static List<UserDTO> toDTO(List<UserEntity> userEntities) {
-        return userEntities.stream().map(UserEntity::toDTO).collect(Collectors.toList());
+
+    public static User toDomain(UserEntity userEntity) {
+        return new User(userEntity.id, userEntity.name, userEntity.email, userEntity.password);
     }
 }
